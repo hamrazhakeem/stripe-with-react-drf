@@ -25,31 +25,44 @@ function getCsrfToken() {
   }
   
   const CreditSelectionPage = () => {
-      const [credits, setCredits] = useState(1);
-      const [isLoading, setIsLoading] = useState(false);
-      const pricePerCredit = 150;
+    const [credits, setCredits] = useState(1);
+    const [inputValue, setInputValue] = useState('1');  // New state for input value
+    const [isLoading, setIsLoading] = useState(false);
+    const pricePerCredit = 150;
+  
+    const incrementCredits = () => {
+      const newValue = credits + 1;
+      setCredits(newValue);
+      setInputValue(newValue.toString());
+    };
     
-      const incrementCredits = () => {
-        setCredits(prev => prev + 1);
-      };
-    
-      const decrementCredits = () => {
+    const decrementCredits = () => {
         if (credits > 1) {
-          setCredits(prev => prev - 1);
+          const newValue = credits - 1;
+          setCredits(newValue);
+          setInputValue(newValue.toString());
         }
       };
-  
+    
       const handleInputChange = (e) => {
         const value = e.target.value;
-        if (value === '' || /^\d+$/.test(value)) {
-          const numValue = value === '' ? 1 : parseInt(value);
-          setCredits(Math.max(1, numValue));
+        setInputValue(value); // Always update input value
+    
+        // Only update credits if value is valid
+        if (value === '') {
+          setCredits(1); // Keep credits at 1 even when input is empty
+        } else if (/^\d+$/.test(value)) {
+          const numValue = parseInt(value);
+          if (numValue >= 1) {
+            setCredits(numValue);
+          }
         }
       };
-  
+    
       const handleBlur = () => {
-        if (!credits || credits < 1) {
+        if (!inputValue || parseInt(inputValue) < 1) {
           setCredits(1);
+          setInputValue('1');
         }
       };
   
@@ -101,61 +114,55 @@ function getCsrfToken() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl p-8 shadow-lg w-full max-w-md">
           {/* Header */}
-          <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-gray-900">Purchase Credits</h2>
-            <p className="text-gray-500 mt-2">1 Credit = ₹150</p>
-          </div>
-
-          {/* Credit Selection */}
           <div className="bg-gray-50 rounded-xl p-6 mb-6">
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-gray-600 font-medium">Amount of Credits</span>
-              <div className="flex items-center gap-4">
-                <button 
-                  onClick={decrementCredits}
-                  disabled={isLoading}
-                  className="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-gray-200 hover:border-[#6772E5] hover:text-[#6772E5] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <Minus className="w-4 h-4" />
-                </button>
-                
-                <input
-                  type="text"
-                  value={credits}
-                  onChange={handleInputChange}
-                  onBlur={handleBlur}
-                  disabled={isLoading}
-                  className="font-semibold text-lg w-20 text-center bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-[#6772E5] focus:ring-1 focus:ring-[#6772E5] disabled:opacity-50"
-                  placeholder="1"
-                />
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-gray-600 font-medium">Amount of Credits</span>
+            <div className="flex items-center gap-4">
+              <button 
+                onClick={decrementCredits}
+                disabled={isLoading}
+                className="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-gray-200 hover:border-[#6772E5] hover:text-[#6772E5] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Minus className="w-4 h-4" />
+              </button>
+              
+              <input
+                type="text"
+                value={inputValue}
+                onChange={handleInputChange}
+                onBlur={handleBlur}
+                disabled={isLoading}
+                className="font-semibold text-lg w-20 text-center bg-white border border-gray-200 rounded-lg focus:outline-none focus:border-[#6772E5] focus:ring-1 focus:ring-[#6772E5] disabled:opacity-50"
+                placeholder="1"
+              />
 
-                <button 
-                  onClick={incrementCredits}
-                  disabled={isLoading}
-                  className="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-gray-200 hover:border-[#6772E5] hover:text-[#6772E5] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <Plus className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-            
-            {/* Price Calculation */}
-            <div className="space-y-3">
-              <div className="flex justify-between text-gray-500">
-                <span>Price per credit</span>
-                <span>₹{pricePerCredit.toLocaleString()}</span>
-              </div>
-              <div className="flex justify-between text-gray-500">
-                <span>Number of credits</span>
-                <span>× {credits.toLocaleString()}</span>
-              </div>
-              <div className="h-px bg-gray-200 my-2"></div>
-              <div className="flex justify-between font-semibold text-lg">
-                <span>Total Amount</span>
-                <span>₹{(credits * pricePerCredit).toLocaleString()}</span>
-              </div>
+              <button 
+                onClick={incrementCredits}
+                disabled={isLoading}
+                className="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-gray-200 hover:border-[#6772E5] hover:text-[#6772E5] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
             </div>
           </div>
+
+          {/* Price Calculation */}
+          <div className="space-y-3">
+            <div className="flex justify-between text-gray-500">
+              <span>Price per credit</span>
+              <span>₹{pricePerCredit.toLocaleString()}</span>
+            </div>
+            <div className="flex justify-between text-gray-500">
+              <span>Number of credits</span>
+              <span>× {credits.toLocaleString()}</span>
+            </div>
+            <div className="h-px bg-gray-200 my-2"></div>
+            <div className="flex justify-between font-semibold text-lg">
+              <span>Total Amount</span>
+              <span>₹{(credits * pricePerCredit).toLocaleString()}</span>
+            </div>
+          </div>
+        </div>
 
           {/* Purchase Button */}
           <div className="relative group">

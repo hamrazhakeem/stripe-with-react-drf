@@ -1,47 +1,73 @@
 import React from 'react';
-import { CheckCircle } from 'lucide-react';
-import { useLocation } from 'react-router-dom';
+import { CheckCircle, Home } from 'lucide-react';
+import { useLocation, Link } from 'react-router-dom';
 
 const PaymentSuccessPage = () => {
   const location = useLocation();
-
-  // Helper function to get query params
   const queryParams = new URLSearchParams(location.search);
   const amount = queryParams.get('amount');
   const credits = queryParams.get('credits');
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-      <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md">
-        {/* Success Icon */}
-        <div className="flex items-center justify-center mb-6">
-          <CheckCircle className="w-16 h-16 text-green-500" />
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl p-8 shadow-lg w-full max-w-md">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
+            <CheckCircle className="w-8 h-8 text-green-500" />
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900">Payment Successful!</h2>
+          <p className="text-gray-500 mt-2">Your credits have been added to your account</p>
         </div>
-
-        {/* Success Message */}
-        <h2 className="text-2xl font-bold text-center text-gray-900 mb-2">
-          Payment Successful!
-        </h2>
-        <p className="text-center text-gray-600 mb-6">
-          Thank you for your purchase! Your transaction has been completed successfully.
-        </p>
 
         {/* Transaction Details */}
-        <div className="bg-gray-100 rounded-lg p-4 mb-6">
-          <h3 className="font-semibold text-gray-800">Transaction Details:</h3>
-          <p className="text-gray-600">Amount: ₹{amount}</p>
-          <p className="text-gray-600">Credits Purchased: {credits}</p>
-          <p className="text-gray-600">Date: {new Date().toLocaleDateString()}</p>
+        <div className="bg-gray-50 rounded-xl p-6 mb-6">
+          <div className="space-y-3">
+            <div className="flex justify-between text-gray-500">
+              <span>Amount Paid</span>
+              <span>₹{amount?.toLocaleString()}</span>
+            </div>
+            <div className="flex justify-between text-gray-500">
+              <span>Credits Purchased</span>
+              <span>{credits?.toLocaleString()} credits</span>
+            </div>
+            <div className="flex justify-between text-gray-500">
+              <span>Transaction Date</span>
+              <span>{new Date().toLocaleDateString()}</span>
+            </div>
+            <div className="h-px bg-gray-200 my-2"></div>
+            <div className="flex justify-between font-semibold text-lg">
+              <span>Credit Balance</span>
+              <span>{credits?.toLocaleString()} credits</span>
+            </div>
+          </div>
         </div>
 
-        {/* Call to Action Button */}
-        <div className="text-center">
-          <a 
-            href="/" 
-            className="inline-block w-full py-3 px-6 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition duration-200"
+        {/* Return Home Button */}
+        <div className="relative group">
+          <div className="absolute -inset-[1px] bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-xl opacity-0 group-hover:opacity-100 blur-sm transition-all duration-500"></div>
+          <Link 
+            to="/"
+            className="relative w-full px-8 py-4 bg-[#6772E5] text-white border border-[#6772E5] hover:bg-white hover:text-[#6772E5] rounded-xl transition-all duration-300 flex items-center justify-center gap-3 group-hover:shadow-xl"
           >
-            Go to Dashboard
-          </a>
+            <Home className="w-5 h-5 text-white group-hover:text-[#6772E5] transition-colors duration-300" />
+            <span className="font-medium text-white group-hover:text-[#6772E5] transition-colors duration-300">
+              Go to Dashboard
+            </span>
+          </Link>
+        </div>
+
+        {/* Success Note */}
+        <div className="mt-6 flex items-center justify-center gap-2 text-sm text-gray-500">
+          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+          Transaction completed successfully
+        </div>
+
+        {/* Receipt Link */}
+        <div className="mt-4 text-center">
+          <button className="text-[#6772E5] hover:text-[#8891EE] text-sm font-medium transition-colors">
+            Download Receipt
+          </button>
         </div>
       </div>
     </div>
