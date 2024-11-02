@@ -7,22 +7,6 @@ import axios from 'axios';
 
 // Initialize Stripe with your publishable key
 const stripePromise = loadStripe(`${import.meta.env.VITE_STRIPE_PK}`);
-
-function getCsrfToken() {
-    const name = 'csrftoken';
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-      const cookies = document.cookie.split(';');
-      for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i].trim();
-        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-          break;
-        }
-      }
-    }
-    return cookieValue;
-  }
   
   const CreditSelectionPage = () => {
     const [credits, setCredits] = useState(1);
@@ -79,12 +63,6 @@ function getCsrfToken() {
             credits,  // The credits field
             price_per_credit: pricePerCredit,  // The price_per_credit field
             currency: 'inr',  // The currency field
-          }, {
-            headers: {
-              'Content-Type': 'application/json',
-              'X-CSRFToken': getCsrfToken(),
-            },
-            withCredentials: true,  // Important for sending cookies
           });
       
           const data = response.data; 
@@ -97,7 +75,7 @@ function getCsrfToken() {
           const result = await stripe.redirectToCheckout({
             sessionId: data.session_id,
           });
-          console.log('result', result);
+
           if (result.error) {
             throw new Error(result.error.message);
           }
